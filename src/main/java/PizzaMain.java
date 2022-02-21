@@ -10,7 +10,8 @@ public class PizzaMain {
 
     private static Map<String, Integer> likeIngredients = new HashMap<>();
     private static Map<String, Integer> disLikeIngredients = new HashMap<>();
-    static List<Client> satisfied = new ArrayList<>();
+    private static List<Client> satisfied = new ArrayList<>();
+    private static List<Client> allClients;
 
     private static List<Client> fillClientsList(List<String[]> trimString) {
 
@@ -89,6 +90,8 @@ public class PizzaMain {
 
         result = result.substring(0, result.length() - 1);
 
+        System.out.println(CountSatisfied.countSatisfiedClients(result, allClients) + " satisfied");
+
         if (Files.exists(path)) {
             try {
                 Files.delete(path);
@@ -112,6 +115,17 @@ public class PizzaMain {
     }
 
     private static List<Client> reEvaluateClients(List<Client> clients) {
+        disLikeIngredients = new HashMap<>();
+
+        for (Client client : clients) {
+            for (String dislike : client.dislikes) {
+                if (disLikeIngredients.containsKey(dislike)) {
+                    disLikeIngredients.put(dislike, disLikeIngredients.get(dislike) + 1);
+                } else {
+                    disLikeIngredients.put(dislike, 1);
+                }
+            }
+        }
 
         for (Client client : clients) {
             int disLikeScore = 0;
@@ -130,7 +144,7 @@ public class PizzaMain {
         }
 
         clients = clients.stream().sorted(Client.Comparators.SCORE).toList();
-        clients.stream().forEach(System.out::println);
+        //clients.stream().forEach(System.out::println);
 
         return new ArrayList<>(clients);
     }
@@ -149,7 +163,7 @@ public class PizzaMain {
         return clients;
     }
 
-    private static List<Client> cleanClients(List<Client> clients, Set<String> ingredients) {
+    private static List<Client> cleanClients(List<Client> clients, Set<String> ingredients, Set<String> dislikes) {
         boolean delete = false;
         List<Client> toDelete = new ArrayList<>();
 
@@ -157,6 +171,15 @@ public class PizzaMain {
             for (String dislike : client.getDislikes()) {
                 for (String ingredient : ingredients) {
                     if (ingredient.equals(dislike)) {
+                        delete = true;
+                        break;
+                    }
+                }
+                if (delete) break;
+            }
+            for (String like : client.likes) {
+                for (String dislike : dislikes) {
+                    if (dislike.equals(like)) {
                         delete = true;
                         break;
                     }
@@ -192,24 +215,32 @@ public class PizzaMain {
     private static Set<String> processIngredients(List<Client> clients) {
         Set<String> result = new HashSet<>();
         Map<String, Integer> dislikes = new HashMap<>(disLikeIngredients);
+        Set<String> disLikedBySatisfied = new HashSet<>();
+        allClients = clients;
 
         do {
-            System.out.println(clients.size());
             clients = reEvaluateClients(clients);
-            satisfied.add(clients.get(0));
-            result.addAll(clients.get(0).getLikes());
-            if (clients.get(0).getDisLikeScore() > 0) clients = cleanClients(clients, result);
+            Client client = clients.get(0);
+            satisfied.add(client);
             clients.remove(0);
+            result.addAll(client.getLikes());
+            disLikedBySatisfied.addAll(client.getDislikes());
+            //System.out.println(result);
+            clients = cleanClients(clients, result, disLikedBySatisfied);
             clients = checkSatisfied(clients, result);
             System.out.println("Clients satisfied: " + satisfied.size());
+            //satisfied.stream().forEach(System.out::println);
+            System.out.println();
             dislikes = cleanDislikes(result, dislikes);
         } while (!clients.isEmpty());
+
 
         return result;
     }
 
     public static void main(String[] args) {
         Path path = Paths.get("src/main/resources/c_coarse.in.txt");
+
         output(processIngredients(fillClientsList(Objects.requireNonNull(fileToStringList(path)))), "src/main/resources/c_output.txt");
     }
 
