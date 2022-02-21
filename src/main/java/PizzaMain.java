@@ -76,6 +76,7 @@ public class PizzaMain {
     }
 
     private static void output(Set<String> ingredients, String out) {
+
         Path path = Paths.get(out);
         String result = "";
 
@@ -129,7 +130,7 @@ public class PizzaMain {
         }
 
         clients = clients.stream().sorted(Client.Comparators.SCORE).toList();
-        //clients.stream().forEach(System.out::println);
+        clients.stream().forEach(System.out::println);
 
         return new ArrayList<>(clients);
     }
