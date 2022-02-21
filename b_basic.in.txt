@@ -1,0 +1,11 @@
+5
+2 ingredient1 ingredient2
+0
+2 ingredient3 ingredient4
+0
+2 ingredient1 ingredient4
+0
+2 ingredient3 ingredient5
+0
+2 ingredient3 ingredient6
+0

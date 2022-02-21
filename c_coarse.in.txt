@@ -1,0 +1,21 @@
+10
+3 ingredient1 ingredient2 ingredient3
+1 ingredient4
+3 ingredient3 ingredient5 ingredient6
+1 ingredient4
+3 ingredient1 ingredient5 ingredient7
+1 ingredient6
+3 ingredient3 ingredient7 ingredient5
+0
+3 ingredient3 ingredient8 ingredient9
+0
+3 ingredient6 ingredient7 ingredient5
+1 ingredient2
+3 ingredient5 ingredient4 ingredient8
+1 ingredient10
+3 ingredient2 ingredient4 ingredient9
+1 ingredient6
+3 ingredient3 ingredient1 ingredient9
+1 ingredient8
+3 ingredient7 ingredient3 ingredient2
+1 ingredient1
