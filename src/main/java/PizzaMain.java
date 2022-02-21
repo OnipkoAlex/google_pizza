@@ -209,8 +209,8 @@ public class PizzaMain {
     }
 
     public static void main(String[] args) {
-        Path path = Paths.get("c_coarse.in.txt");
-        output(processIngredients(fillClientsList(Objects.requireNonNull(fileToStringList(path)))), "c_output.txt");
+        Path path = Paths.get("src/main/resources/c_coarse.in.txt");
+        output(processIngredients(fillClientsList(Objects.requireNonNull(fileToStringList(path)))), "src/main/resources/c_output.txt");
     }
 
     static class Client implements Comparable<Client> {
