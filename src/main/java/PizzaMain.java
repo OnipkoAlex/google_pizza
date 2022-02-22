@@ -129,6 +129,7 @@ public class PizzaMain {
 
         for (Client client : clients) {
             int disLikeScore = 0;
+            int notSatisfiedByPeople = 0;
             if (disLikeIngredients.size() == 0) {
                 client.setDisLikeScore(disLikeScore);
                 continue;
@@ -140,7 +141,16 @@ public class PizzaMain {
                     }
                 }
             }
-            client.setDisLikeScore(disLikeScore);
+            for (String dislike : client.dislikes) {
+                for (Client client1 : clients) {
+                    for (String like : client1.likes) {
+                        if (like.equals(dislike)) {
+                            notSatisfiedByPeople++;
+                        }
+                    }
+                }
+            }
+            client.setDisLikeScore(disLikeScore + notSatisfiedByPeople);
         }
 
         clients = clients.stream().sorted(Client.Comparators.SCORE).toList();
@@ -158,7 +168,8 @@ public class PizzaMain {
                 toDelete.add(client);
             }
         }
-
+        System.out.println("checkSatisfied: " + toDelete.size());
+        //toDelete.stream().forEach(System.out::println);
         clients.removeAll(toDelete);
         return clients;
     }
@@ -192,6 +203,8 @@ public class PizzaMain {
             }
         }
 
+        System.out.println("cleanClients: " + toDelete.size());
+        //toDelete.stream().forEach(System.out::println);
         clients.removeAll(toDelete);
         return clients;
     }
@@ -225,7 +238,7 @@ public class PizzaMain {
             clients.remove(0);
             result.addAll(client.getLikes());
             disLikedBySatisfied.addAll(client.getDislikes());
-            //System.out.println(result);
+            //System.out.println("result: " + result);
             clients = cleanClients(clients, result, disLikedBySatisfied);
             clients = checkSatisfied(clients, result);
             System.out.println("Clients satisfied: " + satisfied.size());
@@ -239,9 +252,9 @@ public class PizzaMain {
     }
 
     public static void main(String[] args) {
-        Path path = Paths.get("src/main/resources/c_coarse.in.txt");
+        Path path = Paths.get("e_elaborate.in.txt");
 
-        output(processIngredients(fillClientsList(Objects.requireNonNull(fileToStringList(path)))), "src/main/resources/c_output.txt");
+        output(processIngredients(fillClientsList(Objects.requireNonNull(fileToStringList(path)))), "src/main/resources/e_output.txt");
     }
 
     static class Client implements Comparable<Client> {
